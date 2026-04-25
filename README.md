@@ -38,4 +38,4 @@ O dashboard permite ao usuário realizar análises exploratórias rápidas atrav
 
 1. **Clonar o repositório:**
    ```bash
-   git clone [https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git](https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git)
+   git clone https://github.com/marciooliva332-web/sprint5-render.git(https://github.com/marciooliva332-web/sprint5-render.git)
