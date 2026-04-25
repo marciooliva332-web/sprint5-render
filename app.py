@@ -1,53 +1,31 @@
-import pandas as pd
-import scipy.stats
 import streamlit as st
-import time
+import pandas as pd
+import plotly_express as px
 
-# estas são variáveis persistentes preservadas à medida que o Streamlin executa novamente esse script
-if 'experiment_no' not in st.session_state:
-    st.session_state['experiment_no'] = 0
+# 1. Ler os dados
+df = pd.read_csv('vehicles.csv')
 
-if 'df_experiment_results' not in st.session_state:
-    st.session_state['df_experiment_results'] = pd.DataFrame(columns=['no', 'iterations', 'mean'])
+# 2. Cabeçalho do Aplicativo
+st.header('Análise de Inventário de Veículos')
 
-st.header('Jogando uma moeda')
+# 3. Checkboxes para os gráficos
+build_histogram = st.checkbox('Criar histograma')
+build_scatter = st.checkbox('Criar gráfico de dispersão')
 
-chart = st.line_chart([0.5])
+if build_histogram:
+    st.write('Criando um histograma para o conjunto de dados de anúncios de vendas de carros')
 
-def toss_coin(n):
+    # criar um histograma
+    fig = px.histogram(df, x="odometer")
 
-    trial_outcomes = scipy.stats.bernoulli.rvs(p=0.5, size=n)
+    # exibir um gráfico Plotly interativo
+    st.plotly_chart(fig, width="stretch")
 
-    mean = None
-    outcome_no = 0
-    outcome_1_count = 0
+if build_scatter:
+    st.write('Criando um gráfico de dispersão para o preço vs. odômetro')
 
-    for r in trial_outcomes:
-        outcome_no +=1
-        if r == 1:
-            outcome_1_count += 1
-        mean = outcome_1_count / outcome_no
-        chart.add_rows([mean])
-        time.sleep(0.05)
+    # criar gráfico de dispersão
+    fig_scatter = px.scatter(df, x="odometer", y="price")
 
-    return mean
-
-number_of_trials = st.slider('Número de tentativas?', 1, 1000, 10)
-start_button = st.button('Executar')
-
-if start_button:
-    st.write(f'Executando o experimento de {number_of_trials} tentativas.')
-    st.session_state['experiment_no'] += 1
-    mean = toss_coin(number_of_trials)
-    st.session_state['df_experiment_results'] = pd.concat([
-        st.session_state['df_experiment_results'],
-        pd.DataFrame(data=[[st.session_state['experiment_no'],
-                            number_of_trials,
-                            mean]],
-                     columns=['no', 'iterations', 'mean'])
-        ],
-        axis=0)
-    st.session_state['df_experiment_results'] = \
-        st.session_state['df_experiment_results'].reset_index(drop=True)
-
-st.write(st.session_state['df_experiment_results'])
+    # exibir gráfico
+    st.plotly_chart(fig_scatter, width="stretch")
